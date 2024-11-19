@@ -1,0 +1,12 @@
+models:
+  - name: test
+    description: This model aggregates the total price of orders by nation, providing insights into the sales distribution across different nations.
+    columns:
+      - name: nation_key
+        description: A unique identifier for each nation, used to group the total sales.
+        data_tests:
+          - not_null
+      - name: total_price
+        description: The aggregated total price of all orders for a specific nation, indicating the total sales value for that nation.
+        data_tests:
+          - not_null
