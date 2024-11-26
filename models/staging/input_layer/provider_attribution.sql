@@ -1,0 +1,1 @@
+select * from {{ source('input_layer', 'provider_attribution') }}

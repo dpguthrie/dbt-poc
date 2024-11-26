@@ -24,6 +24,18 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
 
+vars:
+
+  claims_enabled: true
+
+  ## CMS HCC data mart vars
+  # Setting the payment year to year needed for the demo data
+  cms_hcc_payment_year: 2018
+
+  ## Quality Measure data mart vars
+  # Setting the reporting period to date needed for demo data
+  quality_measures_period_end: "2018-12-31"
+
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
@@ -39,4 +51,6 @@ models:
   poc:
     # Applies to all files under models/example/
     staging:
-      
+
+dbt-cloud:
+    project-id: 385562

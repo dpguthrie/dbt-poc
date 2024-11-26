@@ -1,0 +1,10 @@
+sources:
+  - name: input_layer
+    database: doug_demo_v2
+    tables:
+      - name: eligibility
+      - name: lab_result
+      - name: medical_claim
+      - name: observation
+      - name: pharmacy_claim
+      - name: provider_attribution
