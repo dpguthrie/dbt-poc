@@ -39,4 +39,7 @@ models:
   poc:
     # Applies to all files under models/example/
     staging:
-      
+      +materialized: view
+
+dbt-cloud:
+  project-id: 385562

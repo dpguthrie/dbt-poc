@@ -1,0 +1,11 @@
+repos:
+- repo: https://github.com/dbt-checkpoint/dbt-checkpoint
+  rev: v1.2.1
+  hooks:
+  - id: check-script-has-no-table-name
+  - id: check-model-name-contract
+    args: [--pattern, "(base_|stg_).*"]
+    files: models/staging/
+  - id: check-model-name-contract
+    args: [--pattern, "(dim_|fct_).*"]
+    files: models/marts/

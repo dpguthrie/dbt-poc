@@ -1,0 +1,12 @@
+version: "1"
+context:
+  active-host: "cloud.getdbt.com"
+  active-project: "385562"
+projects:
+  - project-name: "POC"
+    project-id: "385562"
+    account-name: "Doug Sandbox"
+    account-id: "43786"
+    account-host: "cloud.getdbt.com"
+    token-name: "{{ env_var("DBT_CLOUD_TOKEN_NAME") }}"
+    token-value: "{{ env_var("DBT_CLOUD_TOKEN_VALUE") }}"

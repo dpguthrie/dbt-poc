@@ -1,0 +1,6 @@
+sources:
+  - name: claims
+    database: hospital_claims_data
+    schema: istg
+    tables:
+      - name: claimdetail
