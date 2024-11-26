@@ -34,5 +34,5 @@ jobs:
           cp ./.github/dbt_cloud.yml ~/.dbt/dbt_cloud.yml
           sed -i "s/<dbt-cloud-token-name>/$DBT_CLOUD_TOKEN_NAME/" ~/.dbt/dbt_cloud.yml
           sed -i "s/<dbt-cloud-token-value>/$DBT_CLOUD_TOKEN_VALUE/" ~/.dbt/dbt_cloud.yml
-          dbt parse
+          dbt docs generate
           pre-commit run --files ${{ steps.file_changes.outputs.files}}
