@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/dbt-checkpoint/dbt-checkpoint
-  rev: v1.2.1
+  rev: v2.0.6
   hooks:
   - id: check-script-has-no-table-name
   - id: check-model-name-contract
