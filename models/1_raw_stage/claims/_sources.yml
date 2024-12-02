@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: claims
+    database: hospital_claims_data
+    schema: istg
+    tables:
+      - name: claimchargedetail
+      - name: claimdetail
+      - name: cptdetail
+      - name: diagnosisdetail
+      - name: eobdetail
+      - name: eobremarkcodedetail
+      - name: facilitydetail
+      - name: proceduredetail
