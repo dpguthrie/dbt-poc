@@ -39,3 +39,7 @@ models:
   poc:
     staging:
       +materialized: view
+
+dbt-cloud:
+  project-id: 385562
+
