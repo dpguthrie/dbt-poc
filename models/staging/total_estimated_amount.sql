@@ -1,0 +1,10 @@
+{{
+    config (
+        materialized='table'    
+    )
+}}
+select
+    site_id,
+    sum(est_amt_due) as total_estimated_amount_due
+from {{ref('stg_hospital_claims_data__claimdetail')}}
+group by 1
