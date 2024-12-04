@@ -4,3 +4,9 @@ sources:
     schema: istg
     tables:
       - name: claimdetail
+
+  - name: tpch
+    database: RAW
+    schema: TPCH_SF001
+    tables:
+      - name: customer

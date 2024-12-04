@@ -1,0 +1,15 @@
+models:
+  - name: total_estimated_amount
+    description: This model calculates the total estimated amount due for each site by summing up the estimated amounts due from hospital claims data. It provides a summary of financial obligations at the site level.
+    tests:
+      - dbt_utils.expression_is_true:
+          expression: "total_estimated_amount_due = 5"
+    columns:
+      - name: site_id
+        description: A unique identifier for each site where the claims are made.
+        data_tests:
+          - not_null
+      - name: total_estimated_amount_due
+        description: The total sum of estimated amounts due for claims at a specific site, representing the financial obligations for that site.
+        data_tests:
+          - not_null
