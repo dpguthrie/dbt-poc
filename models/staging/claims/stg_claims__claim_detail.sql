@@ -8,7 +8,7 @@ renamed AS (
 
     SELECT
         SITEID AS site_id,
-        CLAIMID AS claim_id,
+        CLAIMID AS claim_id_2,
         MATCHED_YN AS matched_yn,
         PRIMARYCLAIMID AS primary_claim_id,
         PRICLAIMID_ROWNUM AS pri_claim_id_rownum,
