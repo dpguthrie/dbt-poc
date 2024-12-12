@@ -1,0 +1,78 @@
+version: 2
+
+models:
+  - name: int_hospital_claims__claims_enhanced
+    description: "Enhanced claims data with aggregated diagnosis, procedure, and CPT codes, and enriched provider information."
+    columns:
+      - name: siteid
+        tests:
+          - not_null
+      - name: claimid
+        tests:
+          - not_null
+          - unique
+      - name: diagnosis_codes
+        description: "Array of aggregated diagnosis codes associated with the claim."
+        tests:
+          - not_null
+      - name: procedure_codes
+        description: "Array of aggregated procedure codes associated with the claim."
+        tests:
+          - not_null
+      - name: cpt_codes
+        description: "Array of aggregated CPT codes associated with the claim."
+        tests:
+          - not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - siteid
+            - claimid
+
+  - name: int_hospital_claims__eob_enhanced
+    description: "Enhanced EOB data with aggregated remark codes and calculated adjustment amounts."
+    columns:
+      - name: eobid
+        tests:
+          - not_null
+          - unique
+      - name: remark_codes
+        description: "Array of aggregated remark codes associated with the EOB."
+        tests:
+          - not_null
+      - name: calculated_total_adjustment_amount
+        description: "Total adjustment amount calculated from remark code details."
+        tests:
+          - not_null
+      - name: patient_responsibility_amount
+        description: "Amount the patient is responsible for, calculated as billed amount minus paid amount."
+        tests:
+          - not_null
+      - name: adjustment_difference
+        description: "Difference between reported total adjustment amount and calculated adjustment amount."
+        tests:
+          - not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - siteid
+            - eobid
+
+  - name: int_hospital_claims__facility_claims
+    description: "Claims data enriched with facility details for market share and competitive analysis."
+
+  - name: int_hospital_claims__charge_details
+    description: "Detailed charge information combined with claims for cost and utilization analysis."
+    columns:
+      - name: claim_total_charges
+        description: "Total charges for the claim from the enhanced claims data."
+        tests:
+          - not_null
+      - name: claim_service_start_date
+        description: "Service start date for the claim from the enhanced claims data."
+        tests:
+          - not_null
+      - name: claim_service_end_date
+        description: "Service end date for the claim from the enhanced claims data."
+        tests:
+          - not_null

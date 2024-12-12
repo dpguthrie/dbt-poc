@@ -1,0 +1,516 @@
+version: 2
+
+sources:
+  - name: hospital_claims_data
+    database: hospital_claims_data
+    schema: istg
+    tables:
+      - name: claimchargedetail
+        description: "Contains detailed charge information for each claim."
+        columns:
+          - name: SITEID
+            description: "nThrive ID assigned to the claims client."
+            tests:
+              - not_null
+          - name: CLAIMID
+            description: "ClaimID assigned to all related claims for a single episode."
+            tests:
+              - not_null
+          - name: CLAIMSTMFROM
+            description: "Claim-level Service Start Date."
+          - name: CLAIMSTMTHRU
+            description: "Claim-level Service Through Date."
+          - name: LINEITEMCONTROLNUMBER
+            description: "Line ID of each entry for a claim (when populated)."
+          - name: CHARGEID
+            description: "nThrive ID assigned to each unique charge line item within a Site (combines with SiteID to form a Primary Key)."
+            tests:
+              - not_null
+          - name: CHARGEDRUGNDCNUMBER
+            description: "National Drug Code Identifier assigned to the Charge Line."
+          - name: CHARGEPROCEDURECODE
+            description: "HCPCS Procedure Code assigned to the Charge Line."
+          - name: CHARGEREVENUECODE
+            description: "Revenue Code for the Charge Line Item."
+          - name: CHARGESTMFROM
+            description: "Charge Line-Item Service Start Date."
+          - name: CHARGESTMTHRU
+            description: "Charge Line-Item Service End Date."
+          - name: CHARGEPROCEDUREDATE
+            description: "Procedure Date for the Charge Line Item."
+          - name: PLACEOFSERVICECODE
+            description: "Medicare Place of Service Code assigned to the Charge Line."
+          - name: MODIFIER1
+            description: "HCPCS Modifier 1."
+          - name: MODIFIER2
+            description: "HCPCS Modifier 2."
+          - name: MODIFIER3
+            description: "HCPCS Modifier 3."
+          - name: MODIFIER4
+            description: "HCPCS Modifier 4."
+          - name: CHARGES
+            description: "Line Item Charge Amount."
+          - name: UNITS
+            description: "Line Item Units."
+        tests:
+          - dbt_utils.unique_combination_of_columns:
+              combination_of_columns:
+                - SITEID
+                - CHARGEID
+
+      - name: claimdetail
+        description: "Contains high-level claim information."
+        columns:
+          - name: SITEID
+            description: "nThrive ID assigned to the claims client."
+            tests:
+              - not_null
+          - name: CLAIMID
+            description: "ID assigned to each unique claim within a Site. Combined with SiteID forms the primary key on ClaimsDetail table."
+            tests:
+              - not_null
+          - name: MATCHED_YN
+            description: "Indicates if EOB Detail is available on a Claim."
+          - name: PRIMARYCLAIMID
+            description: "ClaimID assigned to all related claims for a single episode."
+          - name: PRICLAIMID_ROWNUM
+            description: "Row number assigned to each duplicate claim for a single PrimaryClaimID."
+          - name: ROOTCLAIMID
+            description: "Internal nThrive ClaimID that identifies the previous ClaimID on a reposted claim."
+          - name: ICN
+            description: "Original Reference Number (Internal Control Number/Document Control Number - ICN/DCN)."
+          - name: BSEQ
+            description: "Indicates the payer number on a specific claim/bill (1 = Primary Payer)."
+          - name: NPAY
+            description: "Number of Payers on a claim."
+          - name: LINKEDCLAIMTYPECODE
+            description: "nThrive repost type code."
+          - name: LINKEDCLAIMTYPEDESC
+            description: "nThrive description of type of claim repost."
+          - name: BILLEDDATE
+            description: "Date the claim was billed."
+          - name: IMPORTDATE
+            description: "Date the claim was imported to the nThrive system."
+          - name: EXPORTDATE
+            description: "Date the claim was exported from the nThrive system and submitted to the payer."
+          - name: STMFROM
+            description: "Claim Service Start Date."
+          - name: STMTHRU
+            description: "Claim Service Through Date."
+          - name: PAYERRCVDATE
+            description: "Date Claim was Acknowledged as Received by Payer."
+          - name: CLAIMTYPECODE
+            description: "1-HCFA & 0-UB92."
+          - name: CLAIMTYPENAME
+            description: "The type of claim submitted by the provider."
+          - name: TOB
+            description: "Type of Bill Code."
+          - name: TOBTYPE
+            description: "0 = Inpatient Institutional Claims, 1 = All Other Claims."
+          - name: TOBFACILITYTYPE
+            description: "Based on 1st Digit of TOB."
+          - name: TOBCLASSIFICATION
+            description: "Based on 2nd Digit of TOB."
+          - name: TOBFREQUENCY
+            description: "Based on 3rd Digit of TOB."
+          - name: TOTALCHARGES
+            description: "Patient's original total charge as submitted. Represents total charges incurred during stay."
+          - name: ESTAMTDUE
+            description: "Estimated Amount Due from Payer (when calculated by provider)."
+          - name: RENDERINGPROVIDERNPI
+            description: "Rendering Provider National Provider Identifier code."
+          - name: RENDERINGPROVIDERNAMELAST
+            description: "Rendering Provider Last Name."
+          - name: RENDERINGPROVIDERNAMEFIRST
+            description: "Rendering Provider First Name."
+          - name: RENDERINGPROVIDERNAMEMIDDLE
+            description: "Rendering Provider Middle Name."
+          - name: RENDERINGPROVIDERTAXID
+            description: "Rendering Provider Tax Identification Number."
+          - name: RENDERINGPROVIDERTAXONOMY
+            description: "Rendering Provider Specialty Code."
+          - name: ATTENDINGPHYSICIANNPI
+            description: "Attending Provider National Provider Identifier code."
+          - name: ATTENDINGPHYSICIANLASTNAME
+            description: "Attending Provider Last Name."
+          - name: ATTENDINGPHYSICIANFIRSTNAME
+            description: "Attending Provider First Name."
+          - name: ATTENDINGPHYSICIANMIDDLENAME
+            description: "Attending Provider Middle Name."
+          - name: ATTENDINGPHYSICIANTAXONOMY
+            description: "Attending Provider Specialty Code."
+          - name: OPERATINGPHYSICIANNPI
+            description: "Operating Provider National Provider Identifier code."
+          - name: OPERATINGPHYSICIANLASTNAME
+            description: "Operating Provider Last Name."
+          - name: OPERATINGPHYSICIANFIRSTNAME
+            description: "Operating Provider First Name."
+          - name: OPERATINGPHYSICIANMIDDLENAME
+            description: "Operating Provider Middle Name."
+          - name: OPERATINGPHYSICIANTAXONOMY
+            description: "Operating Provider Specialty Code."
+          - name: OTHERPHYSICIANNPI
+            description: "Other Physician Provider National Provider Identifier code."
+          - name: OTHERPHYSICIANLASTNAME
+            description: "Other Physician Provider Last Name."
+          - name: OTHERPHYSICIANFIRSTNAME
+            description: "Other Physician Provider First Name."
+          - name: OTHERPHYSICIANMIDDLENAME
+            description: "Other Physician Provider Middle Name."
+          - name: OTHERPHYSICIANTAXONOMY
+            description: "Other Physician Provider Specialty Code."
+          - name: REFERRINGPHYSICIANNPI
+            description: "Referring Physician Provider National Provider Identifier code."
+          - name: REFERRINGPHYSICIANLASTNAME
+            description: "Referring Physician Provider Last Name."
+          - name: REFERRINGPHYSICIANFIRSTNAME
+            description: "Referring Physician Provider First Name."
+          - name: REFERRINGPHYSICIANMIDDLENAME
+            description: "Referring Physician Provider Middle Name."
+          - name: REFERRINGPHYSICIANTAXONOMY
+            description: "Referring Physician Provider Specialty Code."
+          - name: PAYERPRIMARYTYPECODE
+            description: "The nThrive ID assigned to Payer Types for the Primary Payer on the 837 Claim."
+          - name: PAYERPRIMARYTYPEDESC
+            description: "The Payer Type Description for the Primary Payer on the 837 Claim."
+          - name: PAYERPRIMARYID
+            description: "Unique ID assigned to the Primary Payer on the 837 Claim."
+          - name: PAYERPRIMARYNAME
+            description: "Primary Payer Name."
+          - name: PAYERPRIMARYADDRESS1
+            description: "Primary Payer Address."
+          - name: PAYERPRIMARYADDRESS2
+            description: "Primary Payer Address (cont.)."
+          - name: PAYERPRIMARYCITY
+            description: "Primary Payer City."
+          - name: PAYERPRIMARYSTATE
+            description: "Primary Payer State."
+          - name: PAYERPRIMARYZIP
+            description: "Primary Payer Zip."
+          - name: PAYERPRIMARYPLANCODE
+            description: "Plan Code for the Primary Payer as found on the 837 Claim."
+          - name: PAYERSECONDARYTYPECODE
+            description: "The nThrive ID assigned to Payer Types for the Secondary Payer on the 837 Claim."
+          - name: PAYERSECONDARYTYPEDESC
+            description: "The Payer Type Description for the Secondary Payer on the 837 Claim."
+          - name: PAYERSECONDARYID
+            description: "Unique ID assigned to the Secondary Payer on the 837 Claim."
+          - name: PAYERSECONDARYNAME
+            description: "Secondary Payer Name."
+          - name: PAYERSECONDARYADDRESS1
+            description: "Secondary Payer Address."
+          - name: PAYERSECONDARYADDRESS2
+            description: "Secondary Payer Address (cont.)."
+          - name: PAYERSECONDARYCITY
+            description: "Secondary Payer City."
+          - name: PAYERSECONDARYSTATE
+            description: "Secondary Payer State."
+          - name: PAYERSECONDARYZIP
+            description: "Secondary Payer Zip."
+          - name: PAYERSECONDARYPLANCODE
+            description: "Plan Code for the Secondary Payer as found on the 837 Claim."
+          - name: DRGCODE
+            description: "Contains the DRG, MS-DRG or APR-DRG code assigned to patient on discharge."
+          - name: PRINCIPALPROCEDURECODE
+            description: "Principal ICD Procedure Code from the 837 Claim."
+          - name: PRINCIPALPROCEDUREDATE
+            description: "Date of Principal Procedure."
+          - name: UBCONDITIONCODES
+            description: "Comma-delimited list of all Condition Codes found on the UB-04 claim."
+          - name: UBOCCCODES
+            description: "Comma-delimited list of all Occurrence Codes and dates as found on the UB-04 claim."
+          - name: UBOCCSPANCODES
+            description: "Comma-delimited list of all Occurrence Span Codes and date ranges as found on the UB-04 claim."
+          - name: UBVALUECODES
+            description: "Comma-delimited list of all Value Codes and Amounts as found on the UB-04 claim."
+          - name: REVCODES
+            description: "Revenue Codes listed on the 837 Claim."
+          - name: PRIMARYDIAGNOSIS
+            description: "Primary Diagnostic code found on the 837 Claim."
+          - name: ADMITTINGDIAGNOSIS
+            description: "Admitting Diagnostic code from the 837 Claim."
+          - name: ICDVERSION
+            description: "Indicates which version of ICD is used in the claim when populated: 9 = ICD9; 0 = ICD10."
+            tests:
+              - accepted_values:
+                  values: ['9', '0']
+          - name: PRIMARYDIAGNOSIS_POA
+            description: "Present on Admission indicator for the Primary Diagnosis."
+          - name: EXTERNALCAUSEOFINJURY1
+            description: "External Cause of Injury 1 Diagnosis Code on the Claim."
+          - name: EXTERNALCAUSEOFINJURY2
+            description: "External Cause of Injury 2 Diagnosis Code on the Claim."
+          - name: EXTERNALCAUSEOFINJURY3
+            description: "External Cause of Injury 3 Diagnosis Code on the Claim."
+          - name: EXTERNALCAUSEOFINJURY1_POA
+            description: "Present on Admission indicator for the External Cause of Injury 1 Code."
+          - name: EXTERNALCAUSEOFINJURY2_POA
+            description: "Present on Admission indicator for the External Cause of Injury 2 Code."
+          - name: EXTERNALCAUSEOFINJURY3_POA
+            description: "Present on Admission indicator for the External Cause of Injury 3 Code."
+          - name: PATINTREASONFORVISIT1
+            description: "Patient Reason for Visit 1 Diagnosis Code on the Claim."
+          - name: PATINTREASONFORVISIT2
+            description: "Patient Reason for Visit 2 Diagnosis Code on the Claim."
+          - name: PATINTREASONFORVISIT3
+            description: "Patient Reason for Visit 3 Diagnosis Code on the Claim."
+          - name: PATIENT_KEY
+            description: "Secure Hash (with Salt) to create a one-to-one mapping between ClaimDetail and PatientDetail table."
+          - name: CHARGEDETAILAVAIL_YN
+            description: "Indicates if Charge-Level detail is available on a particular claim."
+          - name: UNIQUEPATIENT_KEY
+            description: "Unique nThrive identifier for the patient on the claim."
+          - name: ADMISSIONSOURCE
+            description: "Source of Admission as submitted in the UB92/UB billing form."
+          - name: ADMISSIONTYPE
+            description: "Type of Admission as submitted in the UB92/UB04 billing form."
+          - name: DISCHARGESTATUS
+            description: "Patient Discharge Status as submitted in the UB92/UB04 billing form."
+          - name: PROVIDERID
+            description: "Unique identifier for each provider."
+        tests:
+          - dbt_utils.unique_combination_of_columns:
+              combination_of_columns:
+                - SITEID
+                - CLAIMID
+
+      - name: cptdetail
+        description: "Contains CPT codes associated with claims."
+        columns:
+          - name: SITEID
+            description: "nThrive ID assigned to the claims client."
+            tests:
+              - not_null
+          - name: CLAIMID
+            description: "ID assigned to each unique claim within a Site."
+            tests:
+              - not_null
+          - name: PRIMARYCLAIMID
+            description: "ClaimID assigned to all related claims for a single episode."
+          - name: SEQUENCE
+            description: "Sequence of the codes as administered on the claim."
+          - name: CPTCODE
+            description: "HCPCS/CPT Code."
+
+      - name: diagnosisdetail
+        description: "Contains diagnosis codes associated with claims."
+        columns:
+          - name: SITEID
+            description: "nThrive ID assigned to the claims client."
+            tests:
+              - not_null
+          - name: CLAIMID
+            description: "ID assigned to each unique claim within a Site."
+            tests:
+              - not_null
+          - name: PRIMARYCLAIMID
+            description: "ClaimID assigned to all related claims for a single episode."
+          - name: SEQUENCE
+            description: "Sequence of the codes as administered on the claim."
+          - name: DIAGCODE
+            description: "Diagnosis Code."
+
+      - name: eobdetail
+        description: "Contains Explanation of Benefits (EOB) details."
+        columns:
+          - name: SITEID
+            description: "nThrive ID assigned to the claims client."
+            tests:
+              - not_null
+          - name: EOBID
+            description: "ID assigned to each unique EOB within a Site."
+            tests:
+              - not_null
+          - name: CLAIMID
+            description: "ID assigned to each unique claim within a Site."
+            tests:
+              - not_null
+          - name: PRIMARYCLAIMID
+            description: "ClaimID assigned to all related claims for a single episode."
+          - name: PRICLAIMID_EOBROWNUM
+            description: "Row number assigned to each duplicate claim for a single PrimaryClaimID."
+          - name: EOBTYPE
+            description: "Type of EOB."
+          - name: EOBIMPORTSOURCE
+            description: "Source of EOB Data Import."
+          - name: TYPEOFBILL
+            description: "Type of Bill."
+          - name: CHECKNUMBER
+            description: "Check number for the payment."
+          - name: PAYEENPI
+            description: "Payee National Provider Identifier."
+          - name: REMITPAYERNAME
+            description: "Remittance Payer Name."
+          - name: EOBPAYERCODE
+            description: "Payer code for the particular EOB ID."
+          - name: EOBPAYERID
+            description: "Payer ID for the particular EOB ID."
+          - name: EOBPAYERNAME
+            description: "Payer Name."
+          - name: APPLICATIONSENDER
+            description: "Application number through which data is sent."
+          - name: EOBCROSSOVERPAYERNAME
+            description: "Crossover payer name for the particular EOB ID."
+          - name: EOBCROSSOVERPAYERID
+            description: "Crossover payer ID for the particular EOB ID."
+          - name: STMFROM
+            description: "Claim Service Start Date."
+          - name: STMTHRU
+            description: "Claim Service Through Date."
+          - name: BILLDATE
+            description: "Bill Date."
+          - name: PROCDATE
+            description: "Processing Date."
+          - name: LASTMODIFIEDDATE
+            description: "Record modification date."
+          - name: CREATIONDATE
+            description: "Record creation date."
+          - name: PAYMENTDATE
+            description: "Date the payment was made."
+          - name: EOBDRG
+            description: "EOB DRG code."
+          - name: BILLEDAMOUNT
+            description: "The total charge value of the claim."
+          - name: COVEREDCHARGES
+            description: "Charges paid by Medicare or other insurance for certain medical services."
+          - name: NONCOVEREDCHARGES
+            description: "Charges not paid by Medicare or other insurance for certain medical services."
+          - name: PAIDAMOUNT
+            description: "Amount paid."
+          - name: TOTALADJUSTMENTAMOUNT
+            description: "Total adjustment amount."
+          - name: CONTRACTUALADJUSTMENT
+            description: "Contractual adjustment amount."
+          - name: DEDUCTIBLEADJUSTMENT
+            description: "Deductible adjustment amount."
+          - name: COPAYADJUSTMENT
+            description: "Copay adjustment amount."
+          - name: COINSURANCEADJUSTMENT
+            description: "Coinsurance adjustment amount."
+          - name: OTHERADJUSTMENT
+            description: "Other adjustment amount."
+          - name: DENIEDADJUSTMENT
+            description: "Denied adjustment amount."
+          - name: TOTALPATIENTRESPONSIBILITYADJUSTMENT
+            description: "Total patient responsibility adjustment amount."
+          - name: DENIALCATEGORYID
+            description: "Denial category ID."
+
+      - name: eobremarkcodedetail
+        description: "Contains detailed remark codes from EOBs."
+        columns:
+          - name: SITEID
+            description: "nThrive ID assigned to the claims client."
+            tests:
+              - not_null
+          - name: EOBID
+            description: "ID assigned to each unique EOB within a Site."
+            tests:
+              - not_null
+          - name: ADJUSTMENTTYPE
+            description: "Adjustment Type (Rsn = Reason, Rem = Reimbursement)."
+          - name: EOBCHARGEID
+            description: "Line ID of each entry for a claim (when populated)."
+          - name: GROUPCODE
+            description: "Adjustment Group Code (e.g., CO, OA, PI, PR)."
+          - name: ADJUSTMENTCODE
+            description: "Claim Adjustment Reason Code."
+          - name: REMARKCODE
+            description: "Claim Remark Code."
+          - name: CODE
+            description: "Actual Code (Reason or Remark)."
+          - name: DESCRIPTION
+            description: "Description of the code."
+          - name: QUANTITY
+            description: "Quantity for the code."
+          - name: AMOUNT
+            description: "Amount for the code."
+          - name: PROCEDURECODE
+            description: "Procedure code for the EOB Charge ID."
+          - name: REVENUECODE
+            description: "Revenue code for the EOB Charge ID."
+          - name: SERVICELINEAMOUNT
+            description: "Service amount for the EOB Charge ID."
+          - name: PAIDAMOUNT
+            description: "Payer Paid Amount."
+          - name: LINENUMBER
+            description: "Line number for the EOB Charge ID."
+          - name: LEVEL
+            description: "Claim Adjustment Level (1 = Claim, 2 = Service)."
+          - name: LEVELNAME
+            description: "Claim Level Description."
+          - name: REASONCODETYPE
+            description: "Reason type for the EOB Charge ID (1 = Rsn, 2 = Rem)."
+          - name: APG
+            description: "APG for the EOB Charge ID."
+          - name: COINSADJ
+            description: "Coinsurance adjustment for the EOB Charge ID."
+          - name: CONTRACTADJ
+            description: "Contractual adjustment (allowances) for the EOB Charge ID."
+          - name: COPAYADJ
+            description: "Copay allowances for the EOB Charge ID."
+          - name: COVEREDCHARGES
+            description: "Covered charges for the EOB Charge ID."
+          - name: DEDUCTADJ
+            description: "Deductible allowances for the EOB Charge ID."
+          - name: DENIEDADJ
+            description: "Denied allowances for the EOB Charge ID."
+          - name: NONCONVEREDCHARGES
+            description: "Non-covered charges for the EOB Charge ID."
+          - name: OTHERADJ
+            description: "Other allowances for the EOB Charge ID."
+          - name: PATAMT
+            description: "Patient amount for the EOB Charge ID."
+          - name: SERVICEPERIODSTART
+            description: "Service start date for the EOB Charge ID."
+          - name: SERVICEPERIODEND
+            description: "Service end date for the EOB Charge ID."
+          - name: UNITS1
+            description: "Units1 for the EOB Charge ID."
+          - name: UNITS2
+            description: "Units2 for the EOB Charge ID."
+
+      - name: facilitydetail
+        description: "Contains details about healthcare facilities."
+        columns:
+          - name: PROVIDERID
+            description: "Unique identifier for each provider."
+            tests:
+              - not_null
+              - unique
+          - name: BEDSIZE
+            description: "Value of 1-5 based on bed size. 1 = Less Than 100 Beds, 2 = 100-199 Beds, 3 = 200-299 Beds, 4 = 300-499 Beds, 5 = 500 or More Beds."
+            tests:
+              - accepted_values:
+                  values: [1, 2, 3, 4, 5]
+          - name: REGION
+            description: "One of the 9 US census regions."
+          - name: GEOGRAPHICCLASSIFICATION
+            description: "Rural or Urban."
+            tests:
+              - accepted_values:
+                  values: ['Rural', 'Urban']
+          - name: HOSPITALTYPE
+            description: "Describes type of hospital: Short term, Critical care, or Acute."
+          - name: TEACHINGSTATUS
+            description: "Is a teaching or non-teaching facility."
+          - name: FACILITYZIP
+            description: "Facility Zip Code limited to three digits. Any zip codes containing less than 20,000 people will be set to a three-digit default value per HIPAA regulations."
+
+      - name: proceduredetail
+        description: "Contains procedure codes associated with claims."
+        columns:
+          - name: SITEID
+            description: "nThrive ID assigned to the claims client."
+            tests:
+              - not_null
+          - name: CLAIMID
+            description: "ID assigned to each unique claim within a Site."
+            tests:
+              - not_null
+          - name: PRIMARYCLAIMID
+            description: "ClaimID assigned to all related claims for a single episode."
+          - name: SEQUENCE
+            description: "Sequence of the codes as administered on the claim."
+          - name: PROCEDURECODE
+            description: "Procedure Code."

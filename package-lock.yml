@@ -1,6 +1,14 @@
 packages:
+<<<<<<< HEAD
   - package: tuva-health/the_tuva_project
     version: 0.12.5
   - package: dbt-labs/dbt_utils
     version: 1.3.0
 sha1_hash: ef716818c3c717e42a85ee2b5b12510218c5be56
+=======
+  - package: dbt-labs/codegen
+    version: 0.12.1
+  - package: dbt-labs/dbt_utils
+    version: 1.3.0
+sha1_hash: acdde602cd2e228b1dac1cf1a7e5f98f12c16b3b
+>>>>>>> ea2656dbeae2dabda9184e72a3b3eac5527f1273
