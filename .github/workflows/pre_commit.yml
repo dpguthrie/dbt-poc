@@ -1,0 +1,38 @@
+name: dbt-checkpoint
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  pre_commit_dbt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install pre-commit
+        run: pip install dbt pre-commit
+
+      - id: file_changes
+        uses: trilom/file-changes-action@v1.2.4
+        with:
+          output: ' '
+
+      - name: Run pre-commit model checks
+        env:
+          DBT_CLOUD_TOKEN_NAME: ${{ secrets.DBT_CLOUD_TOKEN_NAME }}
+          DBT_CLOUD_TOKEN_VALUE: ${{ secrets.DBT_CLOUD_TOKEN_VALUE }}
+        run: |
+          mkdir -p ~/.dbt/
+          cp ./.github/dbt_cloud.yml ~/.dbt/dbt_cloud.yml
+          sed -i "s/<dbt-cloud-token-name>/$DBT_CLOUD_TOKEN_NAME/" ~/.dbt/dbt_cloud.yml
+          sed -i "s/<dbt-cloud-token-value>/$DBT_CLOUD_TOKEN_VALUE/" ~/.dbt/dbt_cloud.yml
+          dbt parse
+          pre-commit run --files ${{ steps.file_changes.outputs.files}}
